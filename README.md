@@ -1,7 +1,8 @@
-# Documento de Investigación — Práctica DOM con JavaScript
+# 📋 Práctica: Manipulación del DOM con JavaScript
 
 **Alumno:** Felipe  
 **Fecha:** 5 de Marzo de 2026  
+**Materia:** Programación Web Profesional — 8vo Cuatrimestre
 
 ---
 
@@ -11,9 +12,11 @@ El DOM (Document Object Model) es una representación en forma de árbol de la e
 
 ---
 
-## Parte A — Investigación guiada
+## 1) Parte A — Leer y actualizar contenido/atributos
 
-### 1. Diferencia entre `textContent` e `innerHTML`
+### Investigación guiada
+
+#### 1. Diferencia entre `textContent` e `innerHTML`
 
 | Característica | `textContent` | `innerHTML` |
 |---|---|---|
@@ -32,7 +35,7 @@ element.innerHTML  = "<b>Hola</b>"; // Muestra "Hola" en negrita
 
 ---
 
-### 2. ¿Qué hace `classList.toggle()`?
+#### 2. ¿Qué hace `classList.toggle()`?
 
 `classList.toggle("nombreClase")` **agrega** la clase al elemento si no la tiene, o la **elimina** si ya la tiene. Devuelve `true` si la clase quedó presente, `false` si fue removida. Opcionalmente acepta un segundo parámetro booleano para forzar agregar (`true`) o quitar (`false`).
 
@@ -46,7 +49,7 @@ nota.classList.toggle("destacada");
 
 ---
 
-### 3. ¿Qué es `dataset` y para qué sirve?
+#### 3. ¿Qué es `dataset` y para qué sirve?
 
 `dataset` es una propiedad de solo lectura que da acceso a todos los **atributos `data-*`** de un elemento HTML como un objeto `DOMStringMap`. Sirve para almacenar datos personalizados directamente en el HTML sin afectar la presentación ni la semántica.
 
@@ -64,9 +67,30 @@ Los nombres se convierten de `kebab-case` a `camelCase` (ej. `data-user-name` �
 
 ---
 
-## Parte B — Investigación guiada
+### ✅ Evidencia Parte A — Los 3 botones funcionan
 
-### 1. Diferencia entre `append`, `prepend` y `appendChild`
+#### Estado inicial de la página
+![Estado inicial](./evidencias/A1-estado-inicial.png)
+
+#### Botón "Cambiar título" → El título cambia a "Panel de Noticias (Actualizado)"
+![Título actualizado](./evidencias/A2-titulo-actualizado.png)
+
+#### Botón "Alternar destacado" → La nota obtiene borde azul con `classList.toggle("destacada")`
+![Nota destacada](./evidencias/A3-nota-destacada.png)
+
+#### Botón "Cambiar imagen" → Se cambia el `src` de la imagen y se actualiza el texto
+![Imagen cambiada](./evidencias/A4-imagen-cambiada.png)
+
+#### 🎥 Video demostración Parte A
+![Video Parte A](./evidencias/video-parte-a.webp)
+
+---
+
+## 2) Parte B — Agregar y eliminar elementos del DOM
+
+### Investigación guiada
+
+#### 1. Diferencia entre `append`, `prepend` y `appendChild`
 
 | Método | Acepta | Posición | Devuelve |
 |---|---|---|---|
@@ -87,7 +111,7 @@ lista.append("Texto", otroNodo);   // Múltiples elementos
 
 ---
 
-### 2. ¿Qué es "delegación de eventos" y por qué mejora rendimiento?
+#### 2. ¿Qué es "delegación de eventos" y por qué mejora rendimiento?
 
 La **delegación de eventos** consiste en registrar un **único** event listener en un elemento padre en lugar de uno por cada hijo. Funciona aprovechando el **event bubbling**: cuando un evento ocurre en un hijo, "burbujea" hacia arriba por el DOM hasta llegar al padre.
 
@@ -110,19 +134,118 @@ lista.addEventListener("click", (e) => {
 
 ---
 
-## Parte C — Mini reto: Explicación (5–8 líneas)
+### ✅ Evidencia Parte B — Agregar 3, destacar 1, eliminar 1
 
-En este proyecto se implementaron las **tres opciones** del mini reto:
+#### Se agregaron 3 noticias con `createElement` + `prepend` y la primera se marcó como destacada con `classList.toggle`
+![3 noticias agregadas y 1 destacada](./evidencias/B2-noticia-destacada.png)
 
-1. **Búsqueda local (Opción 1):** Se agregó un campo de búsqueda que escucha el evento `input` y filtra los items de la lista comparando el texto del título y la etiqueta con el valor ingresado. Los items que no coinciden reciben la clase CSS `oculto` que los oculta con `display: none`.
+#### Se eliminó la última noticia con `remove()` — quedan 2
+![Noticia eliminada](./evidencias/B3-noticia-eliminada.png)
 
-2. **Persistencia con LocalStorage (Opción 2):** Cada vez que se agrega, elimina o destaca un item, se serializa la lista completa a JSON y se guarda en `localStorage`. Al cargar la página, la función `cargarLista()` recupera los datos y reconstruye los nodos del DOM.
-
-3. **Seguridad DOM (Opción 3):** Se reemplazó el uso de `innerHTML` en la función `crearItem()` por creación explícita de nodos con `document.createElement()` y asignación de texto con `textContent`. Esto previene ataques XSS ya que `textContent` no interpreta HTML ni ejecuta scripts.
+#### 🎥 Video demostración Parte B
+![Video Parte B](./evidencias/video-parte-b.webp)
 
 ---
 
-## Enlaces consultados
+## 3) Parte C — Investigación aplicada: Mini reto real
+
+En este proyecto se implementaron las **tres opciones** del mini reto:
+
+### Opción 1: 🔍 Búsqueda local (filtrar lista por texto)
+
+Se agregó un campo de búsqueda que escucha el evento `input` y filtra los items de la lista comparando el texto del título y la etiqueta con el valor ingresado. Los items que no coinciden reciben la clase CSS `oculto` que los oculta con `display: none`.
+
+```javascript
+inpBuscar.addEventListener("input", () => {
+  const filtro = inpBuscar.value.toLowerCase().trim();
+  const items = lista.querySelectorAll(".item");
+  items.forEach((item) => {
+    const tituloItem = item.querySelector(".item__title").textContent.toLowerCase();
+    const tagItem = item.querySelector(".pill").textContent.toLowerCase();
+    if (tituloItem.includes(filtro) || tagItem.includes(filtro)) {
+      item.classList.remove("oculto");
+    } else {
+      item.classList.add("oculto");
+    }
+  });
+});
+```
+
+**Fuente:** [MDN input event](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/input_event)
+
+### Opción 2: 💾 Persistencia con LocalStorage
+
+Cada vez que se agrega, elimina o destaca un item, se serializa la lista completa a JSON y se guarda en `localStorage`. Al cargar la página, la función `cargarLista()` recupera los datos y reconstruye los nodos del DOM.
+
+```javascript
+function guardarLista() {
+  const items = lista.querySelectorAll(".item");
+  const datos = [];
+  items.forEach((item) => {
+    datos.push({
+      titulo: item.querySelector(".item__title").textContent,
+      tag: item.querySelector(".pill").textContent,
+      fecha: item.querySelector(".muted").textContent,
+      destacada: item.classList.contains("destacada"),
+    });
+  });
+  localStorage.setItem("dom-lab-noticias", JSON.stringify(datos));
+}
+```
+
+**Fuente:** [MDN localStorage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage)
+
+### Opción 3: 🛡️ Seguridad DOM (evitar inyección XSS)
+
+Se reemplazó el uso de `innerHTML` en la función `crearItem()` por creación explícita de nodos con `document.createElement()` y asignación de texto con `textContent`. Esto previene ataques XSS ya que `textContent` no interpreta HTML ni ejecuta scripts.
+
+```javascript
+// En vez de innerHTML (inseguro):
+// li.innerHTML = `<strong>${titulo}</strong>`;  ❌ XSS vulnerable
+
+// Se usa createElement + textContent (seguro):
+const strong = document.createElement("strong");
+strong.textContent = titulo;  // ✅ Seguro contra XSS
+li.appendChild(strong);
+```
+
+**Fuente:** [OWASP XSS Prevention](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html)
+
+---
+
+### ✅ Evidencia Parte C — Búsqueda local funcionando
+
+#### Lista completa antes de filtrar
+![Lista completa](./evidencias/C1-lista-completa.png)
+
+#### Filtro por título: escribir "hack" → solo muestra "Hackathon programacion"
+![Filtro hack](./evidencias/C2-filtro-hack.png)
+
+#### Filtro por etiqueta: escribir "UTSJR" → solo muestra "Evento cultural 2026"
+![Filtro UTSJR](./evidencias/C3-filtro-utsjr.png)
+
+#### Limpiar filtro → todos los items vuelven a aparecer
+![Filtro limpio](./evidencias/C4-filtro-limpio.png)
+
+#### 🎥 Video demostración Parte C
+![Video Parte C](./evidencias/video-parte-c.webp)
+
+---
+
+## 🧾 Lista de cotejo
+
+- [x] Usa `querySelector`/`getElementById` correctamente
+- [x] Actualiza contenido con `textContent`
+- [x] Modifica atributos con `setAttribute` o propiedades (ej. `img.src`)
+- [x] Manipula clases con `classList`
+- [x] Agrega elementos con `createElement` + `append/prepend`
+- [x] Elimina elementos con `remove()`
+- [x] Implementa delegación de eventos en la lista
+- [x] Incluye investigación con fuentes confiables (MDN/WHATWG/OWASP/Chrome DevTools)
+
+---
+
+## 📚 Enlaces consultados
 
 - [DOM Standard (WHATWG)](https://dom.spec.whatwg.org/)
 - [MDN DOM Guide](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model)
