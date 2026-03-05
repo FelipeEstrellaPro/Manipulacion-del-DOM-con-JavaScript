@@ -1,0 +1,21 @@
+:root { font-family: system-ui, Arial; }
+body { margin: 0; padding: 24px; background: #f6f7fb; }
+.card { max-width: 820px; margin: 0 auto; background: #fff; border-radius: 14px; padding: 18px; box-shadow: 0 6px 24px rgba(0,0,0,.08); }
+.controls { display: flex; gap: 10px; flex-wrap: wrap; margin: 12px 0; }
+button { padding: 10px 12px; border-radius: 10px; border: 1px solid #ccd; background: #f1f3f9; cursor: pointer; }
+.nota { padding: 14px; border: 1px solid #e2e6f0; border-radius: 12px; }
+.nota.destacada { border-color: #1a73e8; box-shadow: 0 0 0 3px rgba(26,115,232,.15); }
+.muted { color: #667; }
+
+/* Parte B */
+input { padding: 10px; border: 1px solid #ccd; border-radius: 10px; min-width: 180px; }
+.lista { list-style: none; padding: 0; margin: 10px 0 0; display: grid; gap: 10px; }
+.item { border: 1px solid #e2e6f0; border-radius: 12px; padding: 12px; display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; }
+.item__meta { display: flex; gap: 8px; flex-wrap: wrap; color: #445; }
+.pill { background: #eef3ff; border-radius: 999px; padding: 4px 10px; font-size: .9rem; }
+.item.destacada { border-color: #1a73e8; box-shadow: 0 0 0 3px rgba(26,115,232,.12); }
+.actions { display: flex; gap: 8px; }
+.actions button { background: #fff; }
+
+/* Parte C - estilos adicionales para búsqueda */
+.item.oculto { display: none; }
